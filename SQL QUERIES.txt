@@ -1,0 +1,29 @@
+1.) select count(*)
+from yellow_taxi_trips
+where date_trunc('day',tpep_pickup_datetime) = '2021-01-15'
+
+2). select max(tip_amount) , date_trunc('day',tpep_pickup_datetime)
+from yellow_taxi_trips
+where date_trunc('day',tpep_pickup_datetime) = '2021-01-15'
+group by date_trunc('day',tpep_pickup_datetime)
+order by 1 desc
+
+3). select count(dropoff_loc),dropoff_loc from (
+select zdo."Zone" as "dropoff_loc"
+from yellow_taxi_trips t
+join zones zpu on t."PULocationID" = zpu."LocationID"
+join zones zdo on t."DOLocationID" = zdo."LocationID"
+WHERE zpu."Zone" LIKE '%Central Park%'
+and date_trunc('day',tpep_pickup_datetime) = '2021-01-14'
+	)as a 
+	group by dropoff_loc
+	order by 1 desc
+
+4.) select avg(total_amount),
+concat(zpu."Zone",'/',zdo."Zone") as "pickup_dropoff"
+--concat(zdo."Borough",'/',zdo."Zone") as  "dropoff_loc"
+from yellow_taxi_trips t
+join zones zpu on t."PULocationID" = zpu."LocationID"
+join zones zdo on t."DOLocationID" = zdo."LocationID"
+group by concat(zpu."Zone",'/',zdo."Zone")
+order by 1 desc
