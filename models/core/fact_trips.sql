@@ -1,8 +1,11 @@
 {{ config(materialized='table') }}
 
 with green_data as (
-    select *, 
-        'Green' as service_type 
+    select tripid, vendorid,ratecodeid, pickup_locationid,dropoff_locationid,
+   pickup_datetime,dropoff_datetime,store_and_fwd_flag, passenger_count,
+trip_distance,trip_type, fare_amount,extra,mta_tax,tip_amount,
+tolls_amount,'1' as ehail_fee,improvement_surcharge,total_amount,payment_type,
+payment_type_description, congestion_surcharge, 'Green' as service_type 
     from {{ ref('stg_green_tripdata') }}
 ), 
 
@@ -13,7 +16,11 @@ yellow_data as (
 ), 
 
 trips_unioned as (
-    select * from green_data
+    select  tripid, vendorid,ratecodeid, pickup_locationid,dropoff_locationid,
+   pickup_datetime,dropoff_datetime,store_and_fwd_flag, passenger_count,
+trip_distance,trip_type, fare_amount,extra,mta_tax,tip_amount,
+tolls_amount,cast(ehail_fee as numeric) as ehail_fee,improvement_surcharge,total_amount,payment_type,
+payment_type_description, congestion_surcharge,service_type from green_data
     union all
     select * from yellow_data
 ), 
